@@ -578,15 +578,7 @@ if [ ! -f blobs/"$deviceid"-"$version".shsh2 ]; then
 
     remote_cmd "/usr/bin/mount_filesystems"
 
-    has_active=$(remote_cmd "ls /mnt6/active" 2> /dev/null)
-    if [ ! "$has_active" = "/mnt6/active" ]; then
-        echo "[!] Active file does not exist! Please use SSH to create it"
-        echo "    /mnt6/active should contain the name of the UUID in /mnt6"
-        echo "    When done, type reboot in the SSH session, then rerun the script"
-        echo "    ssh root@localhost -p 2222"
-        exit
-    fi
-    active=$(remote_cmd "cat /mnt6/active" 2> /dev/null)
+    active=$("$dir"/ideviceinfo -k BootManifestHash | base64 -d | xxd -p -u -c256)
 
     if [ "$restorerootfs" = "1" ]; then
         echo "[*] Removing Jailbreak"
